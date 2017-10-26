@@ -1,0 +1,11 @@
+{
+  "name": "GSC Code Detector",
+  "description": "Detect getsitecontrol code installed",
+  "website": "https://getsitecontrol.com/",
+  "repository": "https://github.com/jane-doe/small-sharp-tool",
+  "buildpacks": [
+    {
+      "url": "https://github.com/jontewks/puppeteer-heroku-buildpack"
+    }
+  ]
+}
