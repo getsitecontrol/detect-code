@@ -4,8 +4,10 @@ Widget script detection
 
 Query
 
+`https://detect-code-gsc.herokuapp.com/?url=http://getsitecontrol.com`
+
 ```sh
-curl http://localhost:3000/?url=http://getsitecontrol.com
+curl https://detect-code-gsc.herokuapp.com/?url=http://getsitecontrol.com
 ```
 
 Response
