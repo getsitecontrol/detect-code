@@ -5,7 +5,7 @@ Widget script detection
 Query
 
 ```sh
-curl http://localhost:3000/\?url\=http://getsitecontrol.com
+curl http://localhost:3000/?url=http://getsitecontrol.com
 ```
 
 Response
