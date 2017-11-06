@@ -8,7 +8,13 @@ async function createApi (browser: Browser) {
   api.get('/', async function (request, reply) {
     const queryUrl = request.query.url
     if (queryUrl && parseUrl(queryUrl)) {
-      reply.send(await detectCode(request.query.url, browser))
+      try{
+        const codeResult = await detectCode(request.query.url, browser)
+        reply.send(codeResult)
+      } catch (err){
+        console.error(err)
+        reply.code(500).send({error: err.message})
+      }
     } else {
       reply.code(500).send({error: 'bad url parameter'})
     }

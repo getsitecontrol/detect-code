@@ -40,6 +40,7 @@ export async function detectCode (url: string, browser:Browser): Promise<IWidget
 
   const page = await browser.newPage()
   await page.setRequestInterceptionEnabled(true)
+  let pageClosed = false
 
   page.on('request', async request => {
     const type = request.resourceType as string
@@ -57,6 +58,7 @@ export async function detectCode (url: string, browser:Browser): Promise<IWidget
           try {
             await page.goBack()
             await page.close()
+            pageClosed = true
           } catch (err) {
             console.error('failed to close page', err)
           }
@@ -72,5 +74,8 @@ export async function detectCode (url: string, browser:Browser): Promise<IWidget
   })
 
   await page.goto(url, {waitUntil: 'networkidle', timeout: TIMEOUT})
+  if (!pageClosed){
+    await page.close()
+  }
   return widgetResult
 }
