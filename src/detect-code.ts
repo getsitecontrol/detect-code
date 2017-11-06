@@ -14,17 +14,16 @@ export async function detectCode (url: string, options?: LaunchOptions): Promise
     siteId: []
   }
 
-  console.log('launching', options)
   const browser = await puppeteer.launch({
     ignoreHTTPSErrors: true,
-    dumpio: true,
+    dumpio: false,
+    headless: true,
+    timeout: 10000,
+    userDataDir: '/tmp/user-data',
     args: [
-      '--headless', // Redundant?
       '--disable-gpu',
       '--no-sandbox',
       '--window-size=1280x1696', // Letter size
-      '--no-sandbox',
-      '--user-data-dir=/tmp/user-data',
       '--hide-scrollbars',
       '--v=99',
       '--single-process',
@@ -36,14 +35,11 @@ export async function detectCode (url: string, options?: LaunchOptions): Promise
     ...options
   })
 
-  console.log('opening new page')
   const page = await browser.newPage()
 
-  console.log('opened new page')
   await page.setRequestInterceptionEnabled(true)
 
   page.on('request', async request => {
-    console.log('request', request.resourceType, request.url)
     const type = request.resourceType as string
     if (type === 'document' || type === 'script') {
       let match
@@ -52,17 +48,17 @@ export async function detectCode (url: string, options?: LaunchOptions): Promise
         widgetResult.detected = true
         widgetResult.siteId.push(parseInt(match[1]))
       }
-      request.continue()
+      if (!widgetResult.detected) {
+        request.continue()
+        return
+      }
     }
-    else {
-      request.abort();
-    }
+    //Abort all other
+    request.abort()
   })
 
-  console.log('opening page', url)
   await page.goto(url, {waitUntil: 'networkidle'})
 
-  console.log('closing')
   await browser.close()
   return widgetResult
 }
