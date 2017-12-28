@@ -1,7 +1,7 @@
 import * as puppeteer from 'puppeteer'
 import {Browser} from 'puppeteer'
 
-const TIMEOUT = 20000
+const TIMEOUT = parseInt(process.env.TIMEOUT || '20000')
 
 export interface IWidgetResult {
   detected: boolean
@@ -39,7 +39,7 @@ export async function detectCode (url: string, browser:Browser): Promise<IWidget
   }
 
   const page = await browser.newPage()
-  await page.setRequestInterceptionEnabled(true)
+  await page.setRequestInterception(true)
   let pageClosed = false
 
   page.on('request', async request => {
@@ -73,7 +73,7 @@ export async function detectCode (url: string, browser:Browser): Promise<IWidget
     request.abort()
   })
 
-  await page.goto(url, {waitUntil: 'networkidle', timeout: TIMEOUT})
+  await page.goto(url, {waitUntil: 'domcontentloaded', timeout: TIMEOUT})
   if (!pageClosed){
     await page.close()
   }

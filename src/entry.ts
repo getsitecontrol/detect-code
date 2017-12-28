@@ -1,32 +1,36 @@
 import * as fastify from 'fastify'
-import {Browser} from 'puppeteer'
-import {parse as parseUrl} from 'url'
-import {detectCode, startBrowser} from './detect-code'
+import { Browser } from 'puppeteer'
+import { parse as parseUrl } from 'url'
+import { detectCode, startBrowser } from './detect-code'
+const pkg = require('../package.json')
 
-async function createApi (browser: Browser) {
+async function createApi(browser: Browser) {
   const api = fastify()
-  api.get('/', async function (request, reply) {
+  api.get('/', async function(request, reply) {
     const queryUrl = request.query.url
     if (queryUrl && parseUrl(queryUrl)) {
-      try{
+      try {
         const codeResult = await detectCode(request.query.url, browser)
         reply.send(codeResult)
-      } catch (err){
+      } catch (err) {
         console.error(err)
-        reply.code(500).send({error: err.message})
+        reply.code(500).send({ error: err.message })
       }
     } else {
-      reply.code(500).send({error: 'bad url parameter'})
+      reply.code(500).send({ error: 'bad url parameter' })
     }
   })
   return api
 }
 
 // Run the server!
+const port = parseInt(process.env.PORT || '3000')
 startBrowser()
   .then(browser => createApi(browser))
-  .then(api => api.listen(parseInt(process.env.PORT || '3000'), function (err) {
-    if (err) throw err
-    console.log(`server listening on ${api.server.address().port}`)
-  }))
+  .then(api =>
+    api.listen(port, function(err) {
+      if (err) throw err
+      console.log(`server ${pkg.version} listening on ${port}`)
+    })
+  )
   .catch(err => console.error(err))
