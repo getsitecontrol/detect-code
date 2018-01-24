@@ -3,7 +3,7 @@ services:
    chrome:
      build: .
      environment:
-       PORT: 3000
+       PORT: 3005
        TIMEOUT: 30000
      ports:
-       - "3000:3000"
+       - "3005:3005"

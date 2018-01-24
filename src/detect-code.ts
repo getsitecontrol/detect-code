@@ -2,7 +2,7 @@ import * as puppeteer from 'puppeteer'
 import { Browser } from 'puppeteer'
 
 const TIMEOUT = parseInt(process.env.TIMEOUT || '20000')
-
+const executablePath=  process.env['CHROME_PATH']
 export interface IWidgetResult {
   detected: boolean
   multipleDetected: boolean
@@ -11,7 +11,9 @@ export interface IWidgetResult {
 }
 
 export async function startBrowser() {
+  console.log('starting ',executablePath)
   return await puppeteer.launch({
+    executablePath,
     ignoreHTTPSErrors: true,
     dumpio: false,
     headless: true,
@@ -20,6 +22,8 @@ export async function startBrowser() {
     args: [
       '--disable-gpu',
       '--no-sandbox',
+      '--disable-setuid-sandbox',
+      '--disable-dev-shm-usage',
       '--window-size=1280x1696', // Letter size
       '--hide-scrollbars',
       '--v=99',

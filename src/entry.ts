@@ -1,4 +1,4 @@
-import * as fastify from 'fastify'
+import * as express from 'express'
 import { Browser } from 'puppeteer'
 import { parse as parseUrl } from 'url'
 import { detectCode, startBrowser } from './detect-code'
@@ -6,8 +6,8 @@ import { Server } from 'http'
 const pkg = require('../package.json')
 
 async function createApi(browser: Browser) {
-  const api = fastify()
-  api.get('/', async function(request, reply) {
+  const api = express()
+  api.get('/', async function (request, reply) {
     const queryUrl = request.query.url
     if (queryUrl && parseUrl(queryUrl)) {
       try {
@@ -15,10 +15,10 @@ async function createApi(browser: Browser) {
         reply.send(codeResult)
       } catch (err) {
         console.error(err)
-        reply.code(500).send({ error: err.message })
+        reply.status(500).send({ error: err.message })
       }
     } else {
-      reply.code(500).send({ error: 'bad url parameter' })
+      reply.status(500).send({ error: 'bad url parameter' })
     }
   })
   return api
@@ -30,10 +30,12 @@ const port = parseInt(process.env.PORT || '3000')
 startBrowser()
   .then(browser => createApi(browser))
   .then(api =>
-    api.listen(port, function(err) {
-      if (err) throw err
+    server = api.listen(port, function(err) {
+      if (err) {
+        console.error(err)
+        process.exit(1)
+      }
       console.log(`server ${pkg.version} listening on ${port}`)
-      server = api.server as Server
     })
   )
   .catch(err => console.error(err))
