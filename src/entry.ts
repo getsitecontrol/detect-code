@@ -2,6 +2,7 @@ import * as fastify from 'fastify'
 import { Browser } from 'puppeteer'
 import { parse as parseUrl } from 'url'
 import { detectCode, startBrowser } from './detect-code'
+import { Server } from 'http'
 const pkg = require('../package.json')
 
 async function createApi(browser: Browser) {
@@ -23,6 +24,7 @@ async function createApi(browser: Browser) {
   return api
 }
 
+let server: Server
 // Run the server!
 const port = parseInt(process.env.PORT || '3000')
 startBrowser()
@@ -31,6 +33,15 @@ startBrowser()
     api.listen(port, function(err) {
       if (err) throw err
       console.log(`server ${pkg.version} listening on ${port}`)
+      server = api.server as Server
     })
   )
   .catch(err => console.error(err))
+
+process.on('SIGTERM', function onSigterm() {
+  console.log(`server ${pkg.version} is shutting down`)
+  server &&
+    server.close(function() {
+      process.exit(0)
+    })
+})

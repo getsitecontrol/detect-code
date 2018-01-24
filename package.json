@@ -9,18 +9,19 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node ./lib/entry",
+    "start": "nodemon ./lib/entry",
     "precommit": "npm run build"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "fastify": "^0.37.0",
-    "puppeteer": "^0.13.0"
+    "fastify": "^0.40.0",
+    "nodemon": "^1.14.11",
+    "puppeteer": "^1.0.0"
   },
   "devDependencies": {
-    "@types/node": "^8.5.2",
-    "@types/puppeteer": "^0.13.0",
+    "@types/node": "^8.5.9",
+    "@types/puppeteer": "^1.0.0",
     "husky": "^0.14.3",
     "typescript": "^2.6.2"
   }

@@ -1,5 +1,5 @@
 import * as puppeteer from 'puppeteer'
-import {Browser} from 'puppeteer'
+import { Browser } from 'puppeteer'
 
 const TIMEOUT = parseInt(process.env.TIMEOUT || '20000')
 
@@ -7,9 +7,10 @@ export interface IWidgetResult {
   detected: boolean
   multipleDetected: boolean
   siteId: number[]
+  error?: Error
 }
 
-export async function startBrowser(){
+export async function startBrowser() {
   return await puppeteer.launch({
     ignoreHTTPSErrors: true,
     dumpio: false,
@@ -31,38 +32,35 @@ export async function startBrowser(){
   })
 }
 
-export async function detectCode (url: string, browser:Browser): Promise<IWidgetResult> {
+export async function detectCode(
+  url: string,
+  browser: Browser
+): Promise<IWidgetResult> {
   const widgetResult: IWidgetResult = {
     detected: false,
     multipleDetected: false,
-    siteId: []
+    siteId: [],
   }
 
   const page = await browser.newPage()
   await page.setRequestInterception(true)
-  let pageClosed = false
 
   page.on('request', async request => {
-    const type = request.resourceType as string
+    const type = request.resourceType()
+    const url = request.url()
     if (type === 'document') {
       request.continue()
-      return; //Don't touch docuemnts
+      return //Don't touch docuemnts
     }
     if (type === 'script') {
       let match
-      if (type === 'script' && (match = /widgets\.getsitecontrol\.com\/(\d+?)\/script\.js/.exec(request.url))) {
+      if (
+        type === 'script' &&
+        (match = /widgets\.getsitecontrol\.com\/(\d+?)\/script\.js/.exec(url))
+      ) {
         widgetResult.multipleDetected = widgetResult.detected
         widgetResult.detected = true
         widgetResult.siteId.push(parseInt(match[1]))
-        setImmediate(async function () {
-          try {
-            await page.goBack()
-            await page.close()
-            pageClosed = true
-          } catch (err) {
-            console.error('failed to close page', err)
-          }
-        })
       }
       if (!widgetResult.detected) {
         request.continue()
@@ -73,8 +71,13 @@ export async function detectCode (url: string, browser:Browser): Promise<IWidget
     request.abort()
   })
 
-  await page.goto(url, {waitUntil: 'domcontentloaded', timeout: TIMEOUT})
-  if (!pageClosed){
+  try {
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: TIMEOUT })
+  } catch (err) {
+    if (!widgetResult.detected) {
+      widgetResult.error = err
+    }
+  } finally {
     await page.close()
   }
   return widgetResult

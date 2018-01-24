@@ -6,7 +6,7 @@
     /* Specify module code generation: 'none', commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
     "outDir": "./lib",
     "sourceMap": false,
-    "lib": ["es2015","es7","esnext"],
+    "lib": ["es2015","es7","esnext","dom"],
     /* Redirect output structure to the directory. */
     "strict": false,
     /* Enable all strict type-checking options. */
