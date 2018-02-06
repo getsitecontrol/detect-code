@@ -3,11 +3,11 @@ services:
   chrome:
     build: .
     environment:
-      PORT: 3005
+      PORT: 3000
       TIMEOUT: 30000
   nginx:
-    image: nginx:alpine
+    build: 
+      dockerfile: ./Dockerfile-nginx
+      context: .
     ports:
       - 8000:8000
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
