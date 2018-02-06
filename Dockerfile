@@ -32,7 +32,7 @@ ARG CACHEBUST=1
 RUN npm install --production
 ENV PORT=3000
 ENV TIMEOUT=30000
-EXPOSE 3000
+EXPOSE $PORT
 COPY ./lib /app/lib
 RUN dpkg -s google-chrome-unstable | grep Version
 
