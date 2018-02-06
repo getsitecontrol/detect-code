@@ -1,9 +1,13 @@
 version: '2'
 services:
-   chrome:
-     build: .
-     environment:
-       PORT: 3005
-       TIMEOUT: 30000
-     ports:
-       - "3005:3005"
+  chrome:
+    build: .
+    environment:
+      PORT: 3005
+      TIMEOUT: 30000
+  nginx:
+    image: nginx:alpine
+    ports:
+      - 8000:8000
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
