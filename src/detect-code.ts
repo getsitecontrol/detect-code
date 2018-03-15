@@ -90,8 +90,9 @@ export async function detectCodeEval(
     if (!widgetResult.detected) {
       widgetResult.error = err.toString()
     }
+    console.error('error detecting eval', err)
   } finally {
-    await page.close()
+    schedulePageClose(page)
   }
   return widgetResult
 }
@@ -144,8 +145,19 @@ export async function detectCode(
     if (!widgetResult.detected) {
       widgetResult.error = err.toString()
     }
+    console.error('error detecting', err)
   } finally {
-    await page.close()
+    schedulePageClose(page)
   }
   return widgetResult
+}
+
+function schedulePageClose(page: puppeteer.Page) {
+  setTimeout(async () => {
+    try {
+      await page.close()
+    } catch (err) {
+      console.error('error closing', err)
+    }
+  })
 }
