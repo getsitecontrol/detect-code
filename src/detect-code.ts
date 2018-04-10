@@ -1,8 +1,8 @@
 import * as puppeteer from 'puppeteer'
 import { Browser } from 'puppeteer'
+import { TIMEOUT } from './options';
 
-const TIMEOUT = parseInt(process.env.TIMEOUT || '20000')
-const executablePath = process.env['CHROME_PATH']
+
 export interface IWidgetResult {
   detected: boolean
   multipleDetected: boolean
@@ -12,31 +12,7 @@ export interface IWidgetResult {
   error?: Error
 }
 
-export async function startBrowser() {
-  console.log('starting ', executablePath)
-  return await puppeteer.launch({
-    executablePath,
-    ignoreHTTPSErrors: true,
-    dumpio: false,
-    headless: true,
-    timeout: TIMEOUT,
-    userDataDir: '/tmp/user-data',
-    args: [
-      '--disable-gpu',
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--window-size=1280x1696', // Letter size
-      '--hide-scrollbars',
-      '--v=99',
-      '--single-process',
-      '--data-path=/tmp/data-path',
-      '--ignore-certificate-errors', // Dangerous?
-      '--homedir=/tmp',
-      '--disk-cache-dir=/tmp/cache-dir',
-    ],
-  })
-}
+
 
 export async function detectCodeEval(
   url: string,
