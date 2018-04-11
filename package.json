@@ -12,7 +12,7 @@
     "build": "tsc",
     "start": "node ./lib/entry",
     "watch": "nodemon ./lib/entry",
-    "precommit": "rm -rf ./lib && npm run build"
+    "precommit": "npm run build"
   },
   "author": "",
   "license": "ISC",
