@@ -2,7 +2,7 @@
 
 Query
 
-`GET https://detect-code-gsc.herokuapp.com/detect-code?eval=true&url=http://getsitecontrol.com`
+`GET  http://localhost:3000/detect-code?eval=true&url=http://getsitecontrol.com`
 
 Params:
 
@@ -19,7 +19,7 @@ Response
 
 Query
 
-`POST https://detect-code-gsc.herokuapp.com/pdf`
+`POST  http://localhost:3000/pdf`
 
 Params:
 
@@ -35,7 +35,7 @@ PDF file
 
 Query
 
-`POST https://detect-code-gsc.herokuapp.com/screenshot?width=1200&height=1000&url=http://getsitecontrol.com`
+`GET http://localhost:3000/screenshot?width=1200&height=1000&url=http://getsitecontrol.com`
 
 Params:
 
@@ -46,3 +46,20 @@ Params:
 Response
 
 JPEG file
+
+## Helth check
+
+Query
+
+`GET http://localhost:3000/test?url=http://getsitecontrol.com`
+
+
+Params:
+
+`url`:page url (defaults to http://getsitecontrol.com)
+
+Response
+
+200 - page opened
+
+500 - something failed
