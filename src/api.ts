@@ -82,6 +82,7 @@ export function createApi(browser: Browser):Application {
         waitUntil: ['load', 'networkidle0'],
         timeout: TIMEOUT,
       })
+      await page.close()
       reply.sendStatus(200)
     } catch (err) {
       reply.status(500).send({ error: err.message })
