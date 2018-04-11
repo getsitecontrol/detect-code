@@ -1,6 +1,6 @@
 import * as puppeteer from 'puppeteer'
 import { Browser } from 'puppeteer'
-import { TIMEOUT } from './options';
+import { TIMEOUT } from '../options';
 
 
 export interface IWidgetResult {

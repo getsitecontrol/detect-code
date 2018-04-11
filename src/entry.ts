@@ -1,13 +1,14 @@
+import * as bodyParser from 'body-parser'
 import * as express from 'express'
-import { Browser } from 'puppeteer'
-import { parse as parseUrl } from 'url'
-import { detectCode, detectCodeEval } from './detect-code'
+import { Request, Response } from 'express'
 import { Server } from 'http'
 import * as puppeteer from 'puppeteer'
-import { executablePath, TIMEOUT } from './options';
-import { printHtml } from './print-page';
-import {Response,Request} from 'express'
-import * as bodyParser from 'body-parser'
+import { Browser } from 'puppeteer'
+import { parse as parseUrl } from 'url'
+import { detectCode, detectCodeEval } from './browser-scripts/detect-code'
+import { executablePath, TIMEOUT, VIEWPORT } from './options'
+import { printHtml } from './browser-scripts/print-page'
+import { makeScreenshot } from './browser-scripts/screenshot';
 
 const pkg = require('../package.json')
 
@@ -39,44 +40,66 @@ async function startBrowser() {
 
 async function createApi(browser: Browser) {
   const api = express()
-  api.get('/', async function(request:Request, reply:Response) {
-    const queryUrl = request.query.url
-    const needEval = request.query.eval
-    if (queryUrl && parseUrl(queryUrl)) {
+  api.get('/detect-code', async function(
+    { query: { url, eval:needEval = false } }: Request,
+    reply: Response
+  ) {
+    if (url && parseUrl(url)) {
       try {
         const codeResult = await (needEval ? detectCodeEval : detectCode)(
-          request.query.url,
+          url,
           browser
         )
         reply.send(codeResult)
       } catch (err) {
-        console.error(err)
         reply.status(500).send({ error: err.message })
       }
     } else {
-      reply.status(500).send({ error: 'bad url parameter' })
+      reply.status(400).send({ error: 'bad url parameter' })
     }
   })
 
-  api.post('/print', bodyParser.text(), async function(request:Request, reply:Response) {
-    const queryHtml = request.body
-    console.log(queryHtml)
-    if (queryHtml) {
+  api.post('/pdf', bodyParser.text({ type: 'text/html' }), async function(
+    { body }: Request,
+    reply: Response
+  ) {
+    if (body && typeof body === 'string') {
       try {
-        const buffer = await printHtml(
-          queryHtml,
-          browser
-        )
-        reply.setHeader('content-type','application/pdf')
+        const buffer = await printHtml(body, browser)
+        reply.setHeader('content-type', 'application/pdf')
         reply.send(buffer)
       } catch (err) {
-        console.error(err)
         reply.status(500).send({ error: err.message })
       }
     } else {
-      reply.status(400).send({ error: 'bad html parameter' })
+      reply
+        .status(400)
+        .send({ error: `bad html body. Use text/html content type` })
     }
   })
+
+  api.get('/screenshot', async function(
+    { query: { url, width = VIEWPORT.width, height = VIEWPORT.height } }: Request,
+    reply: Response
+  ) {
+    if (url && parseUrl(url)) {
+      try {
+        const buffer = await makeScreenshot(
+          url,
+          width,
+          height,
+          browser
+        )
+        reply.setHeader('content-type', 'image/jpeg')
+        reply.send(buffer)
+      } catch (err) {
+        reply.status(500).send({ error: err.message })
+      }
+    } else {
+      reply.status(400).send({ error: 'bad url parameter' })
+    }
+  })
+
   return api
 }
 
@@ -90,7 +113,7 @@ startBrowser()
       (server = api.listen(port, function(err) {
         if (err) {
           console.error(err)
-          process.exit(1)
+          process.exit(1) 
         }
         console.log(`server ${pkg.version} listening on ${port}`)
       }))
