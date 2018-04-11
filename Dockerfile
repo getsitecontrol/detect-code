@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y wget --no-install-recommends \
     && apt-get install -y google-chrome-unstable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst ttf-freefont \
       --no-install-recommends \
     && rm -rf /var/lib/apt/lists/* \
-    && apt-get purge --auto-remove -y curl \
+    && apt-get purge --auto-remove \
     && rm -rf /src/*.deb
 
 # It's a good idea to use dumb-init to help prevent zombie chrome processes.
@@ -35,6 +35,9 @@ ENV TIMEOUT=30000
 EXPOSE $PORT
 COPY ./lib /app/lib
 RUN dpkg -s google-chrome-unstable | grep Version
+
+HEALTHCHECK --interval=30s --timeout=20s --start-period=2s --retries=2\
+	CMD  curl -fs -o/dev/null http://localhost:3000/test?url=http://example.com || exit 1
 
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["npm","start"]
