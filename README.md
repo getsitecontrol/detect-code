@@ -39,13 +39,13 @@ Query
 
 Params:
 
-`width`: viewprot width (defaults to 1200)
-`height`: viewprot height (defaults to 1000)
+`width`: viewport width (defaults to 1200)
+`height`: viewport height (defaults to 1000)
 `url`:page url
 
 Response
 
-JPEG file
+PNG file
 
 ## Helth check
 

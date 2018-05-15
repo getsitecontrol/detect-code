@@ -25,9 +25,8 @@ export async function makeScreenshot(
   })
   await page.setViewport({ width, height })
   const buffer = await page.screenshot({
-    type: 'jpeg',
-    fullPage: false,
-    quality: 60,
+    type: 'png',
+    fullPage: false
   })
   await page.close()
   return buffer
