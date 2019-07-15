@@ -1,12 +1,10 @@
 import * as bodyParser from 'body-parser'
 import * as express from 'express'
 import { Request, Response, Application } from 'express'
-import { Server } from 'http'
-import * as puppeteer from 'puppeteer'
 import { Browser } from 'puppeteer'
 import { parse as parseUrl } from 'url'
 import { detectCode, detectCodeEval } from './browser-scripts/detect-code'
-import { executablePath, TIMEOUT, VIEWPORT } from './options'
+import { TIMEOUT, VIEWPORT } from './options'
 import { printHtml } from './browser-scripts/print-page'
 import { makeScreenshot } from './browser-scripts/screenshot'
 const pkg = require('../package.json')

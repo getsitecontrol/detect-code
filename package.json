@@ -8,25 +8,33 @@
     "node": "8.9.0",
     "npm": "5.5.1"
   },
+  "config": {
+    "prefix": "gsc",
+    "script": "st.getsitecontrol.com/demo/widgets/loader.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node ./lib/entry",
-    "watch": "nodemon ./lib/entry",
-    "precommit": "npm run build"
+    "watch": "nodemon ./lib/entry"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.2",
-    "puppeteer": "^1.2.0"
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "puppeteer": "^1.18.1"
   },
   "devDependencies": {
-    "@types/express": "^4.11.0",
-    "@types/node": "^8.5.9",
-    "@types/puppeteer": "^1.2.0",
-    "husky": "^0.14.3",
-    "nodemon": "^1.14.11",
-    "typescript": "^2.6.2"
+    "@types/express": "^4.17.0",
+    "@types/node": "^12.0.0",
+    "@types/puppeteer": "^1.12.4",
+    "husky": "^3.0.0",
+    "nodemon": "^1.19.1",
+    "typescript": "^3.5.3"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run build"
+    }
   }
 }

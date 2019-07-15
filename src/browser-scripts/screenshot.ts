@@ -1,5 +1,6 @@
 import { Browser } from 'puppeteer'
 import { TIMEOUT } from '../options'
+const { config } = require('../../package.json')
 
 export async function makeScreenshot(
   url: string,
@@ -8,20 +9,21 @@ export async function makeScreenshot(
   browser: Browser
 ): Promise<Buffer> {
   const page = await browser.newPage()
-  await page.evaluateOnNewDocument(() => {
+  await page.evaluateOnNewDocument((prefix:string) => {
     //Disable runtime by emulating already loaded
-    window['_gscq'] = window['_gscq'] || []
-    window['_gscq'].loaded = 1
-    window['gscwidgets'] = {
+    const jsonpFunction = `__${prefix}__l`
+    window[jsonpFunction] = function() {}
+    window[prefix] = window[prefix] || []
+    window[prefix] = {
       start: () => null,
       runtime: {
-        destroy: function() {},
-      },
+        destroy: function() {}
+      }
     }
-  })
+  }, config.prefix)
   await page.goto(url, {
     waitUntil: ['load', 'networkidle0'],
-    timeout: TIMEOUT,
+    timeout: TIMEOUT
   })
   await page.setViewport({ width, height })
   const buffer = await page.screenshot({
