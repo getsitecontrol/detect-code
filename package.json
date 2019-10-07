@@ -10,7 +10,7 @@
   },
   "config": {
     "prefix": "gsc",
-    "script": "st.getsitecontrol.com/demo/widgets/loader.js"
+    "script": "s2.getsitecontrol.com/widgets/load.js"
   },
   "scripts": {
     "build": "tsc",
