@@ -6,7 +6,7 @@ const { config } = require('../../package.json')
 export interface IWidgetResult {
   detected: boolean
   multipleDetected: boolean
-  siteId: number[]
+  siteId: string[]
   activeWidgets?: number
   runtimeSettings?: object
   error?: Error
@@ -80,6 +80,7 @@ export async function detectCode(
 
   const page = await browser.newPage()
   await page.setRequestInterception(true)
+  const re = new RegExp(config.script)
 
   page.on('request', async (request) => {
     const type = request.resourceType()
@@ -89,7 +90,9 @@ export async function detectCode(
       return //Don't touch docuemnts
     }
     if (type === 'script') {
-      if (type === 'script' && new RegExp(config.script).exec(url)) {
+      const match = re.exec(url)
+      if (type === 'script' && match) {
+        widgetResult.siteId = [match[1]]
         widgetResult.multipleDetected = widgetResult.detected
         widgetResult.detected = true
       }
