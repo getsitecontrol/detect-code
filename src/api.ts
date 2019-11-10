@@ -7,6 +7,7 @@ import {detectCode, detectCodeEval} from './browser-scripts/detect-code'
 import {TIMEOUT, VIEWPORT} from './options'
 import {printHtml} from './browser-scripts/print-page'
 import {makeScreenshot} from './browser-scripts/screenshot'
+import {extract} from './browser-scripts/extract'
 
 const pkg = require('../package.json')
 
@@ -23,6 +24,21 @@ export function createApi(browser: Browser): Application {
                     browser
                 )
                 reply.send(codeResult)
+            } catch (err) {
+                reply.status(500).send({error: err.message})
+            }
+        } else {
+            reply.status(400).send({error: 'bad url parameter'})
+        }
+    })
+
+    api.get('/extract', async function (
+        {query: {url,}}: Request,
+        reply: Response
+    ) {
+        if (url && parseUrl(url)) {
+            try {
+                reply.send(await extract(url, browser))
             } catch (err) {
                 reply.status(500).send({error: err.message})
             }
