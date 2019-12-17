@@ -10,6 +10,7 @@ import {makeScreenshot} from './browser-scripts/screenshot'
 import {extract} from './browser-scripts/extract'
 
 const pkg = require('../package.json')
+export const error404 = new Error()
 
 export function createApi(browser: Browser): Application {
     const api = express()
@@ -97,7 +98,11 @@ export function createApi(browser: Browser): Application {
                 reply.setHeader('content-type', 'image/png')
                 reply.send(buffer)
             } catch (err) {
-                reply.status(500).send({error: err.message})
+                if (err == error404){
+                    reply.status(404).send()
+                }else {
+                    reply.status(500).send({error: err.message})
+                }
             }
         } else {
             reply.status(400).send({error: 'bad url parameter'})

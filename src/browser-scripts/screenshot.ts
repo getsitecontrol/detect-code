@@ -1,5 +1,6 @@
 import {Browser, Viewport} from 'puppeteer'
 import {TIMEOUT} from '../options'
+import {error404} from "../api";
 
 const {config} = require('../../package.json')
 
@@ -28,10 +29,13 @@ export async function makeScreenshot(
             }
         }, config.prefix)
     }
-    await page.goto(url, {
+    const resp = await page.goto(url, {
         waitUntil: ['load', 'networkidle0'],
         timeout: TIMEOUT
     })
+    if (!resp.ok()){
+        throw error404
+    }
     await page.setViewport(viewport)
     const buffer = await page.screenshot({
         type: 'png',
