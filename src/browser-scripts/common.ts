@@ -8,6 +8,7 @@ const ignores = [
 
     /google-analytics\.com\//,
     /\.doubleclick\.net\/r\/collect\//,
+    /\.mxapis\.com/,
 
     /alexametrics\.com\//,
     /hs-analytics\.net/,
@@ -32,6 +33,7 @@ const ignores = [
 
     /ads\.linkedin\.com\//,
     /\.ads-twitter\.com\//,
+    /\.bing\.com\//,
 
 
     // chat soft
@@ -40,9 +42,16 @@ const ignores = [
 
     // other
     /cdn\.ravenjs\.com/,
+    /\.gstatic\.com\/recaptcha/,
+    /\.google\.com\/recaptcha/,
 
     /\/vk\.com\/images\//,
     /\/vk\.com\/emoji\//,
+    /\.facebook.com\/rsrc\.php/,
+
+    /maps\.gstatic\.com\/mapfiles/,
+    /www\.google\.com\/maps\//,
+    /maps\.googleapis\.com\//,
 ]
 
 export function ignoreRequest(request: puppeteer.Request): boolean {
