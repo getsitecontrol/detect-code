@@ -9,6 +9,7 @@ const ignores = [
     /google-analytics\.com\//,
     /\.doubleclick\.net\/r\/collect\//,
     /\.mxapis\.com/,
+    /analytics\.yahoo\.com\//,
 
     /alexametrics\.com\//,
     /hs-analytics\.net/,
@@ -16,6 +17,7 @@ const ignores = [
     /\.mxpnl\.com\/libs/,
     /api\.mixpanel\.com\/track/,
     /.+\.hotjar\.com\//,
+    /\.quantserve\.com\/pixel/,
 
     /track\.hubspot\.com/,
     /analytics\.twitter\.com/,
@@ -28,17 +30,24 @@ const ignores = [
     /\.googleadservices\.com\/pagead\//,
     /google\.ru\/pagead\//,
     /\.doubleclick\.net\/pagead\//,
+    /\.adform\.net\//,
+    /adtrak\.org\/rt\//,
+    /ad\.mail\.ru\//,
+    /\.pubmatic\.com\//,
+
 
     /\/t\.co\/i\//,
 
     /ads\.linkedin\.com\//,
     /\.ads-twitter\.com\//,
     /\.bing\.com\//,
+    /\.adnxs\.com\//,
 
 
     // chat soft
     /[\w]\.livetex\.ru\//,
     /[\w]\.olark\.com\//,
+    /code\.jivosite\.com\/images/,
 
     // other
     /cdn\.ravenjs\.com/,

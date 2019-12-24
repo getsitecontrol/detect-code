@@ -41,6 +41,7 @@ export function createApi(browser: Browser): Application {
             try {
                 reply.send(await extract(url, browser))
             } catch (err) {
+                console.error(err)
                 reply.status(500).send({error: err.message})
             }
         } else {
