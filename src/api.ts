@@ -12,6 +12,19 @@ import {extract} from './browser-scripts/extract'
 const pkg = require('../package.json')
 export const error404 = new Error()
 
+export class RequestError extends Error {
+    public code: number
+
+    constructor(code: number, message: string) {
+        if (!message) {
+            message = `Request failed with code ${code}`
+        }
+        super(message);
+        this.code = code
+    }
+
+}
+
 export function createApi(browser: Browser): Application {
     const api = express()
     api.get('/detect-code', async function (
@@ -26,7 +39,7 @@ export function createApi(browser: Browser): Application {
                 )
                 reply.send(codeResult)
             } catch (err) {
-                reply.status(500).send({error: err.message})
+                reply.status(err.code || 500).send({error: err.message})
             }
         } else {
             reply.status(400).send({error: 'bad url parameter'})
@@ -41,8 +54,8 @@ export function createApi(browser: Browser): Application {
             try {
                 reply.send(await extract(url, browser))
             } catch (err) {
-                console.error(err)
-                reply.status(500).send({error: err.message})
+
+                reply.status(err.code || 500).send({error: err.message})
             }
         } else {
             reply.status(400).send({error: 'bad url parameter'})
@@ -59,7 +72,7 @@ export function createApi(browser: Browser): Application {
                 reply.setHeader('content-type', 'application/pdf')
                 reply.send(buffer)
             } catch (err) {
-                reply.status(500).send({error: err.message})
+                reply.status(err.code || 500).send({error: err.message})
             }
         } else {
             reply
@@ -99,9 +112,9 @@ export function createApi(browser: Browser): Application {
                 reply.setHeader('content-type', 'image/png')
                 reply.send(buffer)
             } catch (err) {
-                if (err == error404){
+                if (err == error404) {
                     reply.status(404).send()
-                }else {
+                } else {
                     reply.status(500).send({error: err.message})
                 }
             }

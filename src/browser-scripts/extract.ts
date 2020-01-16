@@ -2,6 +2,7 @@ import * as puppeteer from 'puppeteer'
 import {Browser} from 'puppeteer'
 import {TIMEOUT} from '../options'
 import {ignoreRequest, schedulePageClose} from "./common";
+import {RequestError} from "../api";
 
 const {config} = require('../../package.json')
 
@@ -81,7 +82,7 @@ export async function extract(
             console.timeEnd('loading')
             console.log(resp.status())
             if (resp.status() !== 200) {
-                throw new Error(`Request failed, status=` + resp.status())
+                throw new RequestError(resp.status(), resp.statusText())
             }
         }
 
