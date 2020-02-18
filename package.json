@@ -15,7 +15,8 @@
   "scripts": {
     "build": "tsc",
     "tsc": "tsc -w",
-    "start": "nodemon --watch ./lib/ ./lib/entry"
+    "watch": "nodemon --watch ./lib/ ./lib/entry",
+    "start": "node ./lib/entry"
   },
   "author": "",
   "license": "ISC",
