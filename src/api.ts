@@ -9,6 +9,9 @@ import {printHtml} from './browser-scripts/print-page'
 import {makeScreenshot} from './browser-scripts/screenshot'
 import {extract} from './browser-scripts/extract'
 
+const PngQuant = require('pngquant')
+const streamifier = require('streamifier');
+
 const pkg = require('../package.json')
 export const error404 = new Error()
 
@@ -109,8 +112,13 @@ export function createApi(browser: Browser): Application {
                     viewport,
                     widgets == 'true',
                     browser)
+
                 reply.setHeader('content-type', 'image/png')
-                reply.send(buffer)
+
+                var quanter = new PngQuant(['--quality', '85-100', '-'])
+                streamifier.createReadStream(buffer)
+                    .pipe(quanter)
+                    .pipe(reply)
             } catch (err) {
                 if (err == error404) {
                     reply.status(404).send()
