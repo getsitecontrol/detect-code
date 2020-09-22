@@ -5,7 +5,7 @@ import {Browser, Viewport} from 'puppeteer'
 import {parse as parseUrl} from 'url'
 import {detectCode, detectCodeEval} from './browser-scripts/detect-code'
 import {TIMEOUT, VIEWPORT} from './options'
-import {printHtml} from './browser-scripts/print-page'
+import {printHtml, printUrl} from './browser-scripts/print-page'
 import {makeScreenshot} from './browser-scripts/screenshot'
 import {extract} from './browser-scripts/extract'
 
@@ -65,7 +65,24 @@ export function createApi(browser: Browser): Application {
         }
     })
 
-    api.post('/pdf', bodyParser.text({type: 'text/html'}), async function (
+    api.get('/pdf', async function (
+        {query: {url,}}: Request,
+        reply: Response
+    ) {
+        if (url && parseUrl(url)) {
+            try {
+                const buffer = await printUrl(url, browser)
+                reply.setHeader('content-type', 'application/pdf')
+                reply.send(buffer)
+            } catch (err) {
+                reply.status(err.code || 500).send({error: err.message})
+            }
+        } else {
+            reply.status(400).send({error: 'bad url parameter'})
+        }
+    })
+
+    api.post('/pdf', bodyParser.text({limit: '1mb', type: 'text/html'}), async function (
         {body}: Request,
         reply: Response
     ) {
