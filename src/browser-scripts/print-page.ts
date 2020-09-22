@@ -1,12 +1,16 @@
 import {Browser, Page} from 'puppeteer'
 import {TIMEOUT} from "../options";
 import {error404} from "../api";
+import {disableAllWidgets} from "./common";
 
 export async function printHtml(
   html: string,
   browser: Browser
 ): Promise<Buffer> {
   const page = await browser.newPage()
+  await page.setRequestInterception(true)
+  disableAllWidgets(page)
+
   await page.setContent(html)
   return await print(page)
 }
@@ -16,6 +20,9 @@ export async function printUrl(
   browser: Browser
 ): Promise<Buffer> {
   const page = await browser.newPage()
+  await page.setRequestInterception(true)
+  disableAllWidgets(page)
+
   const resp = await page.goto(url, {
     waitUntil: ['load', 'networkidle0'],
     timeout: TIMEOUT
