@@ -34,7 +34,7 @@ export async function printUrl(
 }
 
 async function print(page: Page): Promise<Buffer> {
-  await page.emulateMedia('print')
+  await page.emulateMediaType('print')
   const margin = '0.4in'
   const buffer = await page.pdf({
     format: 'A4',
