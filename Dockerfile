@@ -11,7 +11,7 @@ RUN  apt-get update \
      # Alternatively, we could could include the entire dep list ourselves
      # (https://github.com/puppeteer/puppeteer/blob/master/docs/troubleshooting.md#chrome-headless-doesnt-launch-on-unix)
      # but that seems too easy to get out of date.
-     && apt-get install -y google-chrome-stable fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf\
+     && apt-get install -y google-chrome-stable\
      && rm -rf /var/lib/apt/lists/* \
      && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
      && chmod +x /usr/sbin/wait-for-it.sh
@@ -25,10 +25,17 @@ ENV CHROME_PATH google-chrome-stable
 
 COPY package.json /app/
 COPY package-lock.json /app/
-
 WORKDIR /app
 ARG CACHEBUST=1
 RUN npm install --production
+
+# install some additions
+# - fonts
+RUN  apt-get update \
+    && apt-get install -y fonts-freefont-ttf fonts-liberation fonts-noto-color-emoji  --no-install-recommends\
+    && rm -rf /var/lib/apt/lists/*
+
+
 ENV PORT=3000
 ENV TIMEOUT=30000
 EXPOSE $PORT

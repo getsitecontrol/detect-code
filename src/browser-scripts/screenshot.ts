@@ -16,15 +16,17 @@ export async function makeScreenshot(
     if (!widgets) {
         disableAllWidgets(page)
     }
+    await page.setViewport(viewport)
+
     const resp = await page.goto(url, {
         waitUntil: ['load', 'networkidle0'],
         timeout: TIMEOUT
     })
+
     if (!resp.ok() && resp.status()!==304){
         console.log(resp)
         throw error404
     }
-    await page.setViewport(viewport)
     const buffer = await page.screenshot({
         type: 'png',
         fullPage: false

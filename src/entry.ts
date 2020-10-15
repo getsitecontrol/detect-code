@@ -27,7 +27,7 @@ async function startBrowser() {
       '--data-path=/tmp/data-path',
       '--ignore-certificate-errors', // Dangerous?
       '--homedir=/tmp',
-      '--disk-cache-dir=/tmp/cache-dir',
+      '--disk-cache-dir=/tmp/cache-dir'
     ],
   })
 }
